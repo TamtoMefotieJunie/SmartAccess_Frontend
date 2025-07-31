@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import adminImg from '../assets/images/im2.jpeg';
+import adminImg from '../assets/images/im7.jpeg';
 import logo from '../assets/images/logo2.jpg';
 import Button from '../Components/Button/Button';
 import FormInput from '../Components/Inputs/FormInput';

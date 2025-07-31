@@ -3,7 +3,7 @@ import { Search } from '@mui/icons-material'
 const SearchInput = () => {
     return (
           <div className="border flex flex-row pl-3 items-center border-gray-200 mt-2 w-[80%] rounded-md ">
-             <Search style={{color:"gray"}}/>
+             <Search style={{color:"gray",color:'#317e3d'}}/>
             <input
               id="price"
               name="price"

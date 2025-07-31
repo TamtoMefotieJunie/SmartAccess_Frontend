@@ -6,7 +6,9 @@ import DashboardPatient from './Components/DashboardPatient';
 import DashboardAuthority from './Components/DashboardAuthority';
 import DashboardHospital from './Components/DashboardHospital';
 import Stock from './View/Stock';
+import Emergency from './View/Patient/Emergency';
 import Orders from './View/Orders';
+import HospitalList from './View/Patient/Hospitals'
 import Technician from './View/Technician';
 import Settings from './View/Settings';
 import Notification from './View/Notification';
@@ -18,10 +20,13 @@ import BloodCollection from './View/BloodCollection';
 import NewDonation from './View/NewDonation';
 import Hospitals from './View/Hospitals';
 import Donor from './View/Donor';
-import Authentication from './View/Authentication';
+import PatientRecommendation from './View/Patient/Recommendation';
+import Recommendation from './View/Recommendation';
 import Register from './View/Register';
 import { Provider } from 'react-redux';
 import { useAuth } from './Utils/AuthProvider';
+import Prediction from './View/Aythority/Prediction';
+import DataUpload from './View/Aythority/DataUpload';
 
 function App() {
   const { user, getUser } = useAuth();
@@ -49,16 +54,16 @@ function App() {
   }, [userState]);
 
   const _roleBasedRoutes = {
-    Citizen: [
-      { path: "dashboard", element: <DashboardRight />, exact: true },
-      { path: 'Technician', element: <Technician />, exact: true },
-      { path: 'Chart', element: <Statistics/>, exact: true },
-      { path: 'Settings', element: <Settings />, exact: true },
-      { path: 'Hospital', element: <Hospitals/>, exact: true },
+    Local: [
+      { path: "dashboard", element: <DashboardPatient/>, exact: true },
+      { path: 'emergency', element: <Emergency />, exact: true },
+      { path: 'report', element: <Statistics/>, exact: true },
+      { path: 'recommendations', element: <PatientRecommendation/>, exact: true },
+      { path: 'health-resources', element: <HospitalList/>, exact: true },
       
     ],
     HealthCenter_admin: [
-      { path: "dashboard", element: <DashboardRight />, exact: true },
+      { path: "dashboard", element: <DashboardHospital/>, exact: true },
       { path: 'Stock', element: <Stock />, exact: false },
       { path: 'Orders', element: <Orders/>, exact: true },
       { path: 'Technician', element: <Technician />, exact: true },
@@ -70,16 +75,16 @@ function App() {
       { path: 'Settings', element: <Settings />, exact: true },
       { path: 'Donor', element: <Donor />, exact: true },
     ],
-    Local_Authority: [
-      { path: "dashboard", element: <DashboardRight />, exact: true },
-      { path: 'Technician', element: <Technician />, exact: true },
-      { path: 'Chart', element: <Statistics/>, exact: true },
-      { path: 'Settings', element: <Settings />, exact: true },
-      { path: 'Hospital', element: <Hospitals/>, exact: true },
+    Citizen: [
+      { path: "dashboard", element: <DashboardAuthority />, exact: true },
+      { path: 'prediction', element: <Prediction/>, exact: true },
+      { path: 'view-predictions', element: <Statistics/>, exact: true },
+      { path: 'submit-data', element: <DataUpload />, exact: true },
+      { path: 'establishment-recommendations', element: <Recommendation/>, exact: true },
       
     ],
     Admin: [
-      { path: "dashboard", element: <DashboardRight />, exact: true },
+      { path: "dashboard", element: <DashboardMain />, exact: true },
       { path: 'Technician', element: <Technician />, exact: true },
       { path: 'Chart', element: <Statistics/>, exact: true },
       { path: 'Settings', element: <Settings />, exact: true },
@@ -106,8 +111,8 @@ function App() {
               <Route index element={
                 userState?.user?.role.name === 'Admin' ? <DashboardMain /> :
                 userState?.user?.role.name === 'HealthCenter_admin' ? <DashboardHospital /> :
-                userState?.user?.role.name === 'Local_Authority' ? <DashboardAuthority /> :
-                <DashboardPatient />
+                userState?.user?.role.name === 'Local_Authority' ? <DashboardPatient /> :
+                <DashboardAuthority />
               } />
              {renderRoutes()} 
             </Route>
@@ -116,6 +121,7 @@ function App() {
           <Route path="/auth" element={<AuthContainer />} />
           <Route path="/register" element={<Register />} />
           <Route path="/landing" element={<LandingPage />} />
+          <Route path="/Settings" element={<Settings/>} />
         </Routes>
       </BrowserRouter>
     </>

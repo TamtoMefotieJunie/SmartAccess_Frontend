@@ -10,10 +10,10 @@ function Navbar(){
    <>
    <div className='flex space-x-30 bg-white rounded-xl h-[11%] p-4 '>
       <div className='w-[40%] self-center '>
-         <SearchInput type="text" name="search" placeholder="Search..."/>
+         <SearchInput  type="text" name="search" placeholder="Search..."/>
       </div>
       <div className='w-[60%] justify-end pr-10 items-center flex space-x-5'>
-         <div><NotificationsOutlined style={{fontSize:"30"}}/></div>
+         <div><NotificationsOutlined style={{fontSize:"30", color:'#317e3d'}}/></div>
          
          <div className='rounded-full w-[7%] flex flex-center items-center h-full bg-red-200'>
             <img

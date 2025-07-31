@@ -6,11 +6,11 @@ import { Dashboard as DashboardIcon, Equalizer, Biotech, Settings as SettingsIco
 
 export const userLinks = [
     {
-        key: "Citizen", 
+        key: "authoriyty", 
         links: [
             { path: "dashboard", label: "Dashboard", icon: <DashboardIcon />, exact: true },
             { path: "emergency", label: "Emergency", icon: <EmergencyShare />, exact: false }, 
-            { path: "my-requests", label: "My Requests", icon: <WalletOutlined />, exact: false }, 
+            // { path: "my-requests", label: "My Requests", icon: <WalletOutlined />, exact: false }, 
             { path: "health-resources", label: "Health Centers", icon: <LocalHospital />, exact: false }, 
             { path: "recommendations", label: "Recommendation", icon: <Person />, exact: false }, 
             { path: "report", label: "My reports", icon: <ReportProblem />, exact: false }, 
@@ -27,7 +27,7 @@ export const userLinks = [
         ]
     },
     {
-        key: "Local_Authority", 
+        key: "Citizen", 
         links: [
             { path: "dashboard", label: "Dashboard", icon: <DashboardIcon />, exact: true },
             { path: "prediction", label: "Prediction", icon: <Science />, exact: false }, 

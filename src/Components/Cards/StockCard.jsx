@@ -1,26 +1,60 @@
-import { Delete, EditAttributes, QrCode } from '@mui/icons-material'
-import React from 'react'
+import React from 'react';
+import { InfoOutlined, DirectionsRun, LocationOnOutlined } from '@mui/icons-material';
 
-const StockCard = ({Group,Quantity,CollectionDate,QRCode,ExpDate,Status,Modify}) => {
+const HospitalCard = ({ 
+  HospitalName, 
+  Specialization, 
+  Availability, 
+  Location, 
+  Status, 
+  onDetailsClick, 
+  onRouteClick 
+}) => {
   return (
-    <>
-    <div className='p-2 border-b-gray-300 border flex items-center pr-5 justify-around text-center'>
-        <div className=' w-[80%] flex items-center justify-between text-base font-semibold text-center '>
-            <span  className=' text-center  w-[12%]'>{Group}</span>
-            <span  className=' text-center  w-[12%]'>{Quantity}</span>
-            <span  className=' text-center  w-[12%]'>{CollectionDate}</span>
-            <span  className=' text-center  w-[12%]'>{QRCode}</span>
-            <span  className=' text-center  w-[12%]'>{ExpDate}</span>
-            <span  className=' text-center  w-[12%]'>{Status}</span>    
+    <div className='p-3 border-b border-gray-200 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors'>
+      <div className='w-[92%] flex'>
+        <div className='w-[22%] pr-2'>
+          <p className='font-medium text-gray-800 truncate'>{HospitalName}</p>
         </div>
-            <span className=' w-[7%] space-x-2 '>
-                <EditAttributes style={{width:40,height:40,color:"#54C2B5"}}/>
-                <Delete style={{width:30,height:30,color:"#CF3304"}}/>
-            </span>
-       
+        <div className='w-[23%] pr-2'>
+          <p className='text-gray-600 text-sm truncate'>{Specialization}</p>
+        </div>
+        <div className='w-[20%] pr-2'>
+          <p className='text-gray-600 text-sm'>{Availability}</p>
+        </div>
+        
+        <div className='w-[15%] pr-2 flex items-center'>
+          <LocationOnOutlined sx={{ fontSize: 16, color: '#64748b', mr: 0.5 }} />
+          <p className='text-gray-600 text-sm truncate'>{Location}</p>
+        </div>
+        <div className='w-[20%] pl-20 flex items-end'>
+          <span className={`inline-flex items-end w-15% px-2.5 text-right py-0.5 rounded-full text-xs font-medium ${
+            Status === 'Open' ? 'bg-green-100 text-green-800' :
+            Status === 'Busy' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
+          }`}>
+            {Status}
+          </span>
+        </div>
+      </div>
+      <div className='flex space-x-1 '>
+        <button
+          onClick={onDetailsClick}
+          className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+          title="View Details"
+        >
+          <InfoOutlined style={{ color: "#317e3d", fontSize: 20 }} /> 
+        </button>
+        <button
+          onClick={onRouteClick}
+          className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+          title="Get Optimal Route"
+        >
+          <DirectionsRun style={{ color: "#97BC62", fontSize: 20 }} /> 
+        </button>
+      </div>
     </div>
-    </>
-  )
-}
+  );
+};
 
-export default StockCard
+export default HospitalCard;
