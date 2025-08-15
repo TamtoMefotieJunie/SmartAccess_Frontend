@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {TrendingUpOutlined,LocalHospitalOutlined,CloudUpload,Description,Close,Healing,Map,Star}from '@mui/icons-material';
-import {TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,Button,Modal,Box,TextField,Typography,Chip,Tabs,Tab,Divider} from '@mui/material';
+import {TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,Button,Modal,Box,TextField,Typography} from '@mui/material';
 import Navbar from '../Components/Bar/Navbar';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';

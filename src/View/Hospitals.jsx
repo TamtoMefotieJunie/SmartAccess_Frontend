@@ -38,7 +38,7 @@ const Hospitals = () => {
         // { Group: "O+", ExpDate: "10/02/2024", QRCode: "DB9010", CollectionDate: "08/06/2024", Status: "Expired", Quantity: "02" },
         // { Group: "AB+", ExpDate: "10/02/2027", QRCode: "SPP1100", CollectionDate: "08/06/2024", Status: "Available", Quantity: "20" },
         // { Group: "A+", ExpDate: "10/02/2025", QRCode: "TBP300", CollectionDate: "08/06/2024", Status: "Available", Quantity: "10" },
-           { ID:"CHUY125300", name:"CHU-Yaounde", location:"Melen" }
+           { ID:"CHUY125300", name:"CHU-Yaounde", location:"Yaounde,Center",Specialties:['Diabetes','Hypertension'] }
     ];
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -89,7 +89,7 @@ const Hospitals = () => {
     });
   return (
     <>   
-         <Modal
+          <Modal
     appElement={document.getElementById('root') || undefined}
 
                 isOpen={modalIsOpen}
@@ -106,7 +106,7 @@ const Hospitals = () => {
                                     className="bg-transparent border-0 text-black float-right"
                                     onClick={closeModal}
                                 >
-                                    <span className="text-black opacity-7 h-10 w-10 items-center flex justify-center text-xl block bg-[#CF3304] py-0 rounded-full">
+                                    <span className="text-black opacity-7 h-10 w-10 items-center flex justify-center text-xl block bg-[#317e3d] py-0 rounded-full">
                                         <CloseRounded style={{ color: "white" }} />
                                     </span>
                                 </button>
@@ -147,7 +147,7 @@ const Hospitals = () => {
                                     {Formik.errors.hospitalAddress && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalAddress}</span>}
                                 
                                     <div className="flex justify-end  pt-9 pb-4 border-t border-solid border-blueGray-200 rounded-b">
-                                        <button className="text-white bg-[#CF3304] font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-xl outline-none focus:outline-none  mb-1"
+                                        <button className="text-white bg-[#317e3d] font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-xl outline-none focus:outline-none  mb-1"
                                         type="submit">Save and continue</button>
                                     </div>
                                 </form>
@@ -155,7 +155,7 @@ const Hospitals = () => {
                         </div>
                     </div>
                 </div>
-            </Modal>
+          </Modal>
             <Modal
                 appElement={document.getElementById('root') || undefined}
                 isOpen={secondModalIsOpen}
@@ -169,7 +169,7 @@ const Hospitals = () => {
                             <div className="flex items-center justify-between p-5 border-b border-solid border-gray-300 rounded-t">
                                 <h3 className="text-2xl font-semibold">Hospital Admin</h3>
                                 <button className="bg-transparent border-0 text-black float-right" onClick={closeSecondModal}>
-                                    <span className="text-black opacity-7 h-10 w-10 items-center flex justify-center text-xl block bg-[#CF3304] py-0 rounded-full">
+                                    <span className="text-black opacity-7 h-10 w-10 items-center flex justify-center text-xl block bg-[#317e3d] py-0 rounded-full">
                                         <CloseRounded style={{ color: "white" }} />
                                     </span>
                                 </button>
@@ -234,7 +234,7 @@ const Hospitals = () => {
                                
                             <div className="flex items-center justify-end mt-2 pt-2 border-t border-solid border-blueGray-200 rounded-b">
                                 <button
-                                    className="text-white bg-[#CF3304] font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-xl outline-none focus:outline-none mr-1 mb-1"
+                                    className="text-white bg-[#317e3d] font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-xl outline-none focus:outline-none mr-1 mb-1"
                                     type="submit">Submit</button>
                             </div>
                             </form>
@@ -246,23 +246,21 @@ const Hospitals = () => {
         
     <div className='w-full space-y-3 h-full overflow-y-hidden'>
       <Navbar />
-      
       <div className='bg-gray-100 rounded-xl p-3 h-[90%]'>
-        <div className='flex items-center justify-end'>
-        
-         
-            <button onClick= {openModal} className='flex self-end p-2 w-[10%] items-center bg-gradient-to-b from-[#CF3304] to-[#CF3304] color-white text-white justify-around rounded-lg'>
+        <div className='flex items-center justify-end'>   
+            <button onClick= {openModal} className='flex self-end p-2 w-[10%] items-center bg-gradient-to-b from-[#317e3d] to-[#317e3d]/50 color-white text-white justify-around rounded-lg'>
               <HealthAndSafety />
               <p className='text-md font-bold'>Add New</p>
             </button>
         </div>
         <div className='bg-white rounded-xl mt-2 h-[87%]'>
-          <div className='p-2 border-b-gray-300 bg-[#54C2B5]  border flex items-center pr-5 justify-around'>
-            <div className=' w-[80%] flex items-center justify-between text-base font-bold text-right'>
-              <span className=' text-center '>Matricle</span>
-              <span className=' text-center '>Name</span>
-              <span className=' text-center '>Location</span>
-            <span className='  text-center  '>Action</span>
+          <div className='p-2 border-b-gray-300 bg-[#317e3d] rounded-lg border flex items-center pr-5 justify-around'>
+            <div className=' w-[80%] flex items-center justify-between text-base text-white  font-bold text-right'>
+              <span className='text-center'>Matricle</span>
+              <span className='text-center'>Name</span>
+              <span className='text-right'>Location</span>
+              <span className='text-center'>Specialties</span>
+            <span className='text-center'>Action</span>
             </div>
           </div>
           {currentItems.map((item, index) => (
@@ -271,7 +269,7 @@ const Hospitals = () => {
               ID={item.ID}
               name={item.name}
               location={item.location}
-              
+              specialties={item.Specialties.join(', ')}
             />
           ))}
         
@@ -288,7 +286,7 @@ const Hospitals = () => {
               <button
                 key={pageNumber}
                 onClick={() => paginate(pageNumber)}
-                className={`p-2 bg-gray-200 hover:bg-gray-300 h-11 focus:outline-none ${currentPage === pageNumber ? 'bg-[#CF3300]' : ''}`}
+                className={`p-2  hover:bg-gray-300 h-11 focus:outline-none ${currentPage === pageNumber ? 'bg-[#317e3d]' : ''}`}
               >
                 {pageNumber}
               </button>

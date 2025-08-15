@@ -267,7 +267,7 @@ function DashboardPatient() {
                       </div>
                     </form>
                   </Box>
-                </Modal>
+            </Modal>
         </div>
    </>
   )

@@ -9,7 +9,7 @@ function Cards({icon,value,label,description,increase,stats,statDescription,bg,b
    return(
    <>
    
-   <div className=' w-full rounded-lg shadow-xl p-3 border-box '
+   <div className=' w-full rounded-lg shadow-xl mb-1 p-3 border-box '
    style={{ backgroundColor: bg,color:text }} 
    >
                   
