@@ -40,7 +40,7 @@ function Emergency() {
    <>
     <div className="w-full h-full overflow-y-hidden">
             <Navbar />
-            <div className="w-full h-full bg-no-repeat bg-cover overflow-y-scroll space-y-4 p-8 rounded-lg"
+            <div className="w-full h-[90%] bg-no-repeat bg-cover overflow-y-scroll space-y-4 p-8 rounded-lg"
                 style={{ backgroundImage: `url(${emergency})` }}
             >
                 {emergencyData.map((em) => (

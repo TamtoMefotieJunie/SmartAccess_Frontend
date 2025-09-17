@@ -114,7 +114,7 @@ const formik = useFormik({
                     <MedicalServices style={{ fontSize: '50px', color:'#FCF4A3'}} />
                   <label className="flex items-center p-2 mt-3 border rounded-lg cursor-pointer has-[:checked]:bg-green-50 has-[:checked]:border-green-600 transition duration-200 ease-in-out">
                       <input type="radio" name="predictionType" value="population" className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500" />
-                      <span className="ml-3 text-gray-700">Service Demand </span>
+                      <span className="ml-3 text-gray-700">Service Demand Level </span>
                   </label>
                 </div>
                 

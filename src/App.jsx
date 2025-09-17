@@ -50,14 +50,14 @@ function App() {
   }, [userState]);
 
   const _roleBasedRoutes = {
-    HealthCenter_admin: [
+    Citizen: [
       { path: "dashboard", element: <DashboardPatient/>, exact: true },
       { path: 'emergency', element: <Emergency />, exact: true },
       { path: 'report', element: <Statistics/>, exact: true },
       { path: 'recommendations', element: <PatientRecommendation/>, exact: true },
       { path: 'health-resources', element: <HospitalList/>, exact: true },
     ],
-    Citizen: [
+    HealthCenter_admin: [
       { path: "dashboard", element: <DashboardHospital/>, exact: true },
       { path: 'my-hospital-profile', element: <HospitalFile />, exact: true },
       { path: 'Notification', element: <Notification/>, exact: true },

@@ -3,7 +3,7 @@ import { Dashboard as DashboardIcon, Equalizer, Biotech, Settings as SettingsIco
 
 export const userLinks = [
     {
-        key: "Admin", 
+        key: "Citizen", 
         links: [
             { path: "dashboard", label: "Dashboard", icon: <DashboardIcon />, exact: true },
             { path: "emergency", label: "Emergency", icon: <EmergencyShare />, exact: false }, 
@@ -13,7 +13,7 @@ export const userLinks = [
         ]
     },
     {
-        key: "Citizen", 
+        key: "HealthCenter_admin", 
         links: [
             { path: "dashboard", label: "Dashboard", icon: <DashboardIcon />, exact: true },
             { path: "my-hospital-profile", label: "Hospital Profile", icon: <LocalHospital />, exact: false }, 

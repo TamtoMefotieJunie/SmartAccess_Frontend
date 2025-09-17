@@ -4,6 +4,8 @@ import Navbar from '../Components/Bar/Navbar';
 import HospitalCard from './Cards/StockCard';
 import { Close } from '@mui/icons-material';
 import doctorImage  from '../assets/images/doctor.png'
+import Swal from 'sweetalert2';
+import axios from 'axios';
 import { EmergencyCard,TotalRequestCard,ActiveMedicationCard } from './Cards/PatientCard'
 function DashboardPatient() {
 
@@ -43,42 +45,84 @@ function DashboardPatient() {
     ];
 
     const handleDetailsClick = (hospital) => {
-        console.log("View details for:", hospital.name);
-       
+        console.log("View details for:", hospital.name);  
     };
     
     const [openModal, setOpenModal] = useState(false);
     const handleOpenModal = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
-    const handleSubmit = async (e) => {
+    const [numSymptoms, setNumSymptoms] = useState(0);
+    const [symptoms, setSymptoms] = useState([]);
+    const [user, setUser] = useState(null);
+    const [patientId, setPatientId] = useState(null);
+
+     useEffect(() => {
+      const storedData = localStorage.getItem('user');
+      if (storedData !== "undefined") {
+        try {
+          const parsedData = JSON.parse(storedData);
+          const token = parsedData.token;
+          const user = parsedData.user;
+          const patientId = user._id
+          setUser(user)
+          setPatientId(patientId)
+          console.log("Token:", token);
+          console.log("User:", user);
+          console.log("User ID:", user._id);  
+        }catch (error) {
+        console.error("Error parsing stored data:", error);
+      }
+      }
+      }, []);
+
+    const baseURL='http://localhost:8080';
+    const [formData, setFormData] = useState({
+      city: "",
+      description: "",
+      symptom_severity: "",
+    });
+
+  const handleNumChange = (e) => {
+    const value = parseInt(e.target.value) || 0;
+    setNumSymptoms(value);
+    setSymptoms(Array(value).fill(""));
+  };
+  const handleSymptomChange = (index, value) => {
+    const updated = [...symptoms];
+    updated[index] = value;
+    setSymptoms(updated);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const body = {
+      city:formData.city,
+      description:formData.description,
+      related_symptoms:symptoms,
+      symptom_severity:formData.symptom_severity,
+      patient:patientId
+    };
+    console.log(body)
     try {
-      const response = await fetch('/api/recommendations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...newCenter,
-          recommendation_case: 'new_establishment',
-          model_type: 'Manual Proposal'
-        })
-      });
-      
-      if (response.ok) {
-        const updatedRecs = await fetch('/api/recommendations');
-        setRecommendations(await updatedRecs.json());
-        handleCloseModal();
+      const response = await axios.post(`${baseURL}/emergency/new`, body);
+      if (response.data) {
+        console.log(response.data.data)
+        Swal.fire('Error', 'emergency case created successfuly', 'success');
+        setOpenModal(false);
       }
     } catch (error) {
-      console.error('Error submitting proposal:', error);
+      console.error("Error creating a new emergency situation:", error);
+      Swal.fire('Error', 'Failed to create emergency case', 'error');
     }
   };
-    const handleRouteClick = (hospital) => {
-        console.log("Get route for:", hospital.name);
-    
-    };
-    
+  const handleRouteClick = (hospital) => {
+      console.log("Get route for:", hospital.name);
+  };
   return (
     <>
         <div className='w-full h-full overflow-y-hidden '>
@@ -184,88 +228,80 @@ function DashboardPatient() {
                   }}>
                     <div className="flex justify-between items-center mb-4">
                       <Typography variant="h5" className="text-[#317e3d]">
-                        Propose New Health Center
+                       Emergency Medical Recommendation
                       </Typography>
                       <Button onClick={handleCloseModal} size="small">
-                        <Close />
+                        <Close  style={{color:'#317e3d'}}/>
                       </Button>
                     </div>
           
-                    <form onSubmit={handleSubmit}>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        {/* <TextField
-                          label="City"
-                          name="city"
-                        //   value={newCenter.city}
-                          onChange={handleInputChange}
-                          required
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                        /> */}
-                       
-                        {/* <TextField
-                          label="Specialty"
-                          name="specialty"
-                        //   value={newCenter.specialty}
-                          onChange={handleInputChange}
-                          required
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                          select
-                          SelectProps={{ native: true }}
-                        >
-                          <option value=""></option>
-                          <option value="General Practice">General Practice</option>
-                          <option value="Pediatrics">Pediatrics</option>
-                          <option value="Maternity">Maternity</option>
-                          <option value="Trauma">Trauma</option>
-                          <option value="Cardiology">Cardiology</option>
-                        </TextField> */}
-                       
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium">City</label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className="mt-1 p-2 border rounded w-full"
+                        placeholder="Enter your city"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Description</label>
+                      <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="mt-1 p-2 border rounded w-full"
+                        placeholder="Brief description"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Symptom Severity</label>
+                      <select
+                        name="symptom_severity"
+                        value={formData.symptom_severity}
+                        onChange={handleChange}
+                        className="mt-1 p-2 border rounded w-full"
+                      >
+                        <option value="">Select severity</option>
+                        <option value="Mild">Mild</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Severe">Severe</option>
+                        <option value="Critical">Critical</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Number of Symptoms</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={numSymptoms}
+                        onChange={handleNumChange}
+                        className="mt-1 p-2 border rounded w-full"
+                      />
+                    </div>
+                    {symptoms.map((symptom, index) => (
+                      <div key={index}>
+                        <label className="block text-sm font-medium">
+                          Symptom #{index + 1}
+                        </label>
+                        <input
+                          type="text"
+                          value={symptom}
+                          onChange={(e) => handleSymptomChange(index, e.target.value)}
+                          className="mt-1 p-2 border rounded w-full"
+                          placeholder="Enter symptom"
+                        />
                       </div>
-          
-                      
-          
-                      <div className="mb-4">
-                        <Typography variant="subtitle2" className="mb-2">
-                          Reasoning Factors
-                        </Typography>
-                        <div className="flex gap-2 mb-2">
-                          {/* <TextField
-                            label="Add Reasoning Factor"
-                            name="reasoningFactorInput"
-                            value={newCenter.reasoningFactorInput || ''}
-                            onChange={handleInputChange}
-                            fullWidth
-                            variant="outlined"
-                            size="small"
-                          /> */}
-                          <Button 
-                            variant="outlined" 
-                          >
-                            Add
-                          </Button>
-                        </div>
-                        
-                      </div>
-          
-                      <Divider className="my-4" />
-          
-                      <div className="flex justify-end space-x-2">
-                        <Button variant="outlined" onClick={handleCloseModal}>
-                          Cancel
-                        </Button>
-                        <Button 
-                          type="submit" 
-                          variant="contained" 
-                          style={{ backgroundColor: '#317e3d', color: 'white' }}
-                        >
-                          Submit Proposal
-                        </Button>
-                      </div>
-                    </form>
+                    ))}
+                    <button
+                      type="submit"
+                      className="bg-[#317e3d] text-white px-4 py-2 rounded hover:bg-[#317e3d]/70">
+                      Submit
+                    </button>
+                  </form>
                   </Box>
             </Modal>
         </div>

@@ -7,7 +7,7 @@ import Modal from 'react-modal';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { validationSchema } from '../Utils/RegisterValidation';
+import { validationSchema } from '../Utils/hospitalValidation';
 
 
 const Hospitals = () => {
@@ -33,11 +33,6 @@ const Hospitals = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3; 
     const stockData = [
-        // { Group: "AB+", ExpDate: "10/02/2027", QRCode: "SP100", CollectionDate: "08/06/2024", Status: "Available", Quantity: "20" },
-        // { Group: "B-", ExpDate: "10/03/2027", QRCode: "QD50", CollectionDate: "01/06/2023", Status: "Bought", Quantity: "15" },
-        // { Group: "O+", ExpDate: "10/02/2024", QRCode: "DB9010", CollectionDate: "08/06/2024", Status: "Expired", Quantity: "02" },
-        // { Group: "AB+", ExpDate: "10/02/2027", QRCode: "SPP1100", CollectionDate: "08/06/2024", Status: "Available", Quantity: "20" },
-        // { Group: "A+", ExpDate: "10/02/2025", QRCode: "TBP300", CollectionDate: "08/06/2024", Status: "Available", Quantity: "10" },
            { ID:"CHUY125300", name:"CHU-Yaounde", location:"Yaounde,Center",Specialties:['Diabetes','Hypertension'] }
     ];
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -47,111 +42,155 @@ const Hospitals = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     const baseURL='http://localhost:8080';
     const Formik = useFormik({ 
-      initialValues: {
+     initialValues: {
         name: '',
         email: '',
         password: '',
         matriculationID: '',
-        hospitalAddress:'',
-        hospitalName:'',
-        hospitalMatricule:'',
+        hospitalName: '',
+        hospitalAddress: '',
+        longitude:'',
+        latitude:'',
+        hospitalRegion: '',
+        hospitalTelephone: '',
         telephone: '',
       },
       validationSchema,
-      validateOnChange: false, 
-      validateOnBlur: false,
+      validateOnChange: true, 
+      validateOnBlur: true,
      
       onSubmit: async (values) => {
         const body = {
-          "hospital":{
-          hospitalName: Formik.values.hospitalName,
-          hospitalMatricule: Formik.values.hospitalMatricule,
-          hospitalAddress: Formik.values.hospitalAddress,
+          hospital: {
+            name: values.hospitalName,
+            address: values.hospitalAddress,
+            longitude:values.longitude,
+            latitude:values.latitude,
+            region: values.hospitalRegion,
+            telephone_general: values.hospitalTelephone,
           },
-          "admin":{
-            adminName: Formik.values.name,
-            adminMatricule: Formik.values.matriculationID,
-            adminEmail: Formik.values.email,
-            adminPassword: Formik.values.password,
-            role:"66d1ae620f6c67314a4f0963"
+          admin: {
+            adminName: values.name,
+            adminEmail: values.email,
+            adminPassword: values.password,
+            adminMatricule: values.matriculationID,
+            telephone: values.telephone,
+            role: "6877183e36a5e00b2e57f907"
           }
-      }
-
+        };
         console.log("form values:", body);
         try {
-            const response = await axios.post(`${baseURL}/banks/addHospital`, body);
-            console.log(response.data);
-            handlesave();
+          const response = await axios.post(`${baseURL}/banks/addHospital`, body);
+          console.log(response.data);
+          handlesave();
         } catch (error) {
-            console.log(error);
+          console.log('Error details:', error.response?.data || error.message);
+          Swal.fire('Error', 'Failed to create hospital and admin', 'error');
         }
-    }
+      }
+
     });
   return (
     <>   
-          <Modal
-    appElement={document.getElementById('root') || undefined}
+     <Modal
+        appElement={document.getElementById('root') || undefined}
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          className="fixed inset-0 flex items-center justify-center"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-50">
+            <div className="flex justify-center shadow-xl items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div className="relative shadow-xl w-[27%] my-6 mx-auto">
+                <div className="border-0 rounded-lg shadow-xl relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    <div className="flex items-center justify-between p-5 border-b border-solid border-gray-300 rounded-t">
+                      <h3 className="text-2xl font-semibold">Hospital Info</h3>
+                      <button
+                        className="bg-transparent border-0 text-black float-right"
+                        onClick={closeModal}>
+                        <span className="text-black opacity-7 h-10 w-10 items-center flex justify-center text-xl block bg-[#317e3d] py-0 rounded-full">
+                          <CloseRounded style={{ color: "white" }} />
+                        </span>
+                      </button>
+                    </div>
+                    <div className="relative p-4 flex-auto">
+                        <form onSubmit={handleSubmit} className="rounded shadow-md px-8 pb-5 pt-3 w-full">
+                            <label htmlFor='hospitalName' className="block py-2 text-black text-sm font-bold mb-1">
+                                Hospital Name
+                            </label>
+                            <input className="shadow appearance-none text-base border rounded w-full py-2 px-1 text-black"
+                                type='text'
+                                id='hospitalName'
+                                name="hospitalName"
+                                value={Formik.values.hospitalName}
+                                onChange={Formik.handleChange}
+                            />
+                            {Formik.errors.hospitalName && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalName}</span>}
 
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                className="fixed inset-0 flex items-center justify-center"
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-            >
-                <div className="flex justify-center shadow-xl items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                    <div className="relative shadow-xl w-[27%] my-6 mx-auto">
-                        <div className="border-0 rounded-lg shadow-xl relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                            <div className="flex items-center justify-between p-5 border-b border-solid border-gray-300 rounded-t">
-                                <h3 className="text-2xl font-semibold">Hospital Info</h3>
-                                <button
-                                    className="bg-transparent border-0 text-black float-right"
-                                    onClick={closeModal}
-                                >
-                                    <span className="text-black opacity-7 h-10 w-10 items-center flex justify-center text-xl block bg-[#317e3d] py-0 rounded-full">
-                                        <CloseRounded style={{ color: "white" }} />
-                                    </span>
-                                </button>
+                            <label htmlFor='hospitalRegion' className="block py-2 text-black text-sm font-bold mb-1">
+                                Region
+                            </label>
+                            <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
+                                type='text'
+                                id='hospitalRegion'
+                                name="hospitalRegion"
+                                value={Formik.values.hospitalRegion}
+                                onChange={Formik.handleChange}
+                            />
+                            {Formik.errors.hospitalRegion && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalRegion}</span>}
+
+                            <label htmlFor='hospitalAddress' className="block py-2 text-black text-sm font-bold mb-1">
+                                Address
+                            </label>
+                            <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
+                                type='text'
+                                id='hospitalAddress'
+                                name="hospitalAddress"
+                                value={Formik.values.hospitalAddress}
+                                onChange={Formik.handleChange}
+                            />
+                            {Formik.errors.hospitalAddress && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalAddress}</span>}
+                             
+                            <label htmlFor='longitude' className="block py-2 text-black text-sm font-bold mb-1">
+                                Longitude
+                            </label>
+                            <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
+                                type='number'
+                                id='longitude'
+                                name="longitude"
+                                value={Formik.values.longitude}
+                                onChange={Formik.handleChange}
+                            />
+                            {Formik.errors.longitude && <span className="text-[#CF3304] text-sm ">{Formik.errors.longitude}</span>}
+                            
+                            <label htmlFor='latitude' className="block py-2 text-black text-sm font-bold mb-1">
+                               Latitude
+                            </label>
+                            <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
+                                id='latitude'
+                                type='number'
+                                name="latitude"
+                                value={Formik.values.latitude}
+                                onChange={Formik.handleChange}
+                            />
+                            {Formik.errors.latitude && <span className="text-[#CF3304] text-sm ">{Formik.errors.latitude}</span>}
+                            
+                            <label htmlFor='hospitalTelephone' className="block py-2 text-black text-sm font-bold mb-1">
+                                Telephone
+                            </label>
+                            <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
+                                type='text'
+                                id='hospitalTelephone'
+                                name="hospitalTelephone"
+                                value={Formik.values.hospitalTelephone}
+                                onChange={Formik.handleChange}
+                            />
+                            {Formik.errors.hospitalTelephone && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalTelephone}</span>}
+
+                            <div className="flex justify-end  pt-9 pb-4 border-t border-solid border-blueGray-200 rounded-b">
+                              <button className="text-white bg-[#317e3d] font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-xl outline-none focus:outline-none  mb-1"
+                              type="submit">Save and continue</button>
                             </div>
-                            <div className="relative p-4 flex-auto">
-                                <form onSubmit={handleSubmit} className="rounded shadow-md px-8 pb-5 pt-3 w-full">
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
-                                        Hospital Name
-                                    </label>
-                                    <input className="shadow appearance-none text-base border rounded w-full py-2 px-1 text-black"
-                                        type='text'
-                                        name="hospitalName"
-                                        value={Formik.values.hospitalName}
-                                        onChange={Formik.handleChange}
-                                    />
-                                    {Formik.errors.hospitalName && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalName}</span>}
-
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
-                                        Matricle
-                                    </label>
-                                    <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
-                                        type='text'
-                                        name="hospitalMatricule"
-                                        value={Formik.values.hospitalMatricule}
-                                        onChange={Formik.handleChange}
-                                    />
-                                    {Formik.errors.hospitalMatricule && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalMatricule}</span>}
-
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
-                                        Location
-                                    </label>
-                                    <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
-                                        type='text'
-                                        name="hospitalAddress"
-                                        value={Formik.values.hospitalAddress}
-                                        onChange={Formik.handleChange}
-                                    />
-                                    {Formik.errors.hospitalAddress && <span className="text-[#CF3304] text-sm ">{Formik.errors.hospitalAddress}</span>}
-                                
-                                    <div className="flex justify-end  pt-9 pb-4 border-t border-solid border-blueGray-200 rounded-b">
-                                        <button className="text-white bg-[#317e3d] font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-xl outline-none focus:outline-none  mb-1"
-                                        type="submit">Save and continue</button>
-                                    </div>
-                                </form>
-                              </div>
+                        </form>
+                      </div>
                         </div>
                     </div>
                 </div>
@@ -177,55 +216,60 @@ const Hospitals = () => {
 
                             <div className="relative p-4 flex-auto">
                                 <form onSubmit={Formik.handleSubmit} className="rounded shadow-md px-8 pb-5 pt-3 w-full">
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
+                                    <label htmlFor='name' className="block py-2 text-black text-sm font-bold mb-1">
                                         Full Name
                                     </label>
                                     <input className="shadow appearance-none text-base border rounded w-full py-2 px-1 text-black"
                                         type='text'
+                                        id='name'
                                         name="name"
                                         value={Formik.values.name}
                                         onChange={Formik.handleChange}
                                     />
                                     {Formik.errors.name && <span className="text-[#CF3304] text-sm ">{Formik.errors.name}</span>}
 
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
+                                    <label htmlFor='matriculationID' className="block py-2 text-black text-sm font-bold mb-1">
                                         Matricle
                                     </label>
                                     <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
                                         type='text'
+                                        id='matriculationID'
                                         name="matriculationID"
                                         value={Formik.values.matriculationID}
                                         onChange={Formik.handleChange}
                                     />
                                     {Formik.errors.matriculationID && <span className="text-[#CF3304] text-sm ">{Formik.errors.matriculationID}</span>}
 
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
+                                    <label htmlFor='email' className="block py-2 text-black text-sm font-bold mb-1">
                                         Email Address
                                     </label>
                                     <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
                                         type='email'
+                                        id='email'
                                         name="email"
                                         value={Formik.values.email}
                                         onChange={Formik.handleChange}
                                     />
                                     {Formik.errors.email && <span className="text-[#CF3304] text-sm ">{Formik.errors.email}</span>}
 
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
+                                    <label htmlFor='password' className="block py-2 text-black text-sm font-bold mb-1">
                                         Password
                                     </label>
                                     <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
                                         type='password'
+                                        id='password'
                                         name="password"
                                         value={Formik.values.password}
                                         onChange={Formik.handleChange}
                                     />
                                     {Formik.errors.password && <span className="text-[#CF3304] text-sm ">{Formik.errors.password}</span>}
 
-                                    <label className="block py-2 text-black text-sm font-bold mb-1">
+                                    <label htmlFor='telephone' className="block py-2 text-black text-sm font-bold mb-1">
                                         Telephone
                                     </label>
                                     <input className="shadow text-base appearance-none border rounded w-full py-2 px-1 text-black"
                                         type='text'
+                                        id='telephone'
                                         name="telephone"
                                         value={Formik.values.telephone}
                                         onChange={Formik.handleChange}

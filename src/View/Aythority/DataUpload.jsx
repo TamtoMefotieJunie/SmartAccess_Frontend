@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { ChevronLeft, ChevronRight, RecyclingTwoTone, BarChart, CloudUpload, FilterList, FileUpload,Map,DownloadDoneOutlined, RequestQuote } from '@mui/icons-material';
 import Navbar from '../../Components/Bar/Navbar';
-import StockCard from '../../Components/Cards/StockCard';
-import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik';
 import * as Yup from 'yup'; 
 import Swal from 'sweetalert2'
@@ -68,21 +66,41 @@ const [uploadStatus, setUploadStatus] = useState(null);
             dataType: "Report",
             region: "All"
         }
-    ];
+  ];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = uploadedFiles.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const validationSchema = Yup.object({
-    packPrice: Yup.number()
-      .typeError('Price must be a number')
-      .positive('Price must be greater than zero')
-      .required('Price is required'),
-  });
-
   const baseURL='http://localhost:8080';
+  const [user, setUser] = useState(null);
+  const [providerId, setProviderId] = useState(null);
+
+  useEffect(() => {
+   
+    const storedData = localStorage.getItem('user');
+  
+    if (storedData && storedData !== "undefined") {
+      try {
+        const parsedData = JSON.parse(storedData);
+        const token = parsedData.token;
+        const user = parsedData.user;
+        
+        const providerId = user._id
+        
+        setUser(user)
+        setProviderId(providerId)
+        console.log("Token:", token);
+        console.log("User:", user);
+        console.log("User ID:", user._id);
+        
+      }catch (error) {
+      console.error("Error parsing stored data:", error);
+    }
+    }
+  
+  }, []);
+ 
   const formik = useFormik({
         initialValues: {
             dataType: '',
@@ -92,33 +110,41 @@ const [uploadStatus, setUploadStatus] = useState(null);
         validationSchema: Yup.object({
             dataType: Yup.string().required('Data type is required'),
             region: Yup.string().required('Region is required'),
-            file: Yup.mixed().required('A data file is required').test(
-                'fileType',
-                'Only CSV files are supported',
-                (value) => value && value.type === 'text/csv'
-            ),
+            file: Yup.mixed().required('A data file is required')
         }),
-        onSubmit: async (values, { resetForm }) => {
-            setIsUploading(true);
-            setUploadStatus(null);
+       onSubmit: async (values, { resetForm }) => {
+        try {
+          setIsUploading(true);
+          setUploadStatus(null);
+          const formData = new FormData();
+          formData.append("file", values.file); 
+          formData.append("region", values.region);
+          formData.append("file_category", values.dataType); 
+          formData.append("provider", providerId); 
 
-            setTimeout(() => {
-                const isSuccess = Math.random() > 0.1; 
-                
-                setIsUploading(false);
-
-                if (isSuccess) {
-                    setUploadStatus('success');
-                    resetForm(); 
-                    formik.setFieldValue('file', null); 
-                } else {
-                    setUploadStatus('error');
-                }
-   
-                document.getElementById('status-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            }, 2000); 
-        },
+          console.log("Sending providerId:", providerId); 
+ 
+          const res = await axios.post(`${baseURL}/api/upload`,formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          setIsUploading(false);
+          if (res.status === 200) {
+            setUploadStatus("success");
+            resetForm();
+            formik.setFieldValue("file", null);
+          } else {
+            setUploadStatus("error");
+            console.error(res.data?.error);
+          }
+        
+        } catch (err) {
+          setIsUploading(false);
+          setUploadStatus("error");
+          console.error("Upload error:", err);
+        }
+      },
     });
 
   return (
@@ -139,12 +165,10 @@ const [uploadStatus, setUploadStatus] = useState(null);
                   Securely upload new data to update the forecast models.
               </p>
             </header>
-              <form onSubmit={formik.handleSubmit}
-              // action='/upload_files' enctype='multipart/form-data'
-              >
+              <form onSubmit={formik.handleSubmit}>
                 <div className="space-y-6">
                     <div>
-                      <label htmlFor="dataType" className="block text-sm font-medium text-gray-700 mb-2">Data Type</label>
+                      <label htmlFor="dataType" className="block text-sm font-medium text-gray-700 mb-2">File Categroy</label>
                       <div className={`form-input-group flex items-center border rounded-lg p-2 transition ${
                           formik.touched.dataType && formik.errors.dataType ? 'border-red-500' : 'border-gray-300 focus-within:ring-2 focus-within:ring-green-700'
                       }`}>
@@ -214,7 +238,6 @@ const [uploadStatus, setUploadStatus] = useState(null);
                             name="file"
                             type="file" 
                             className="hidden" 
-                            accept=".csv" 
                             onChange={(event) => {
                                 formik.setFieldValue("file", event.currentTarget.files[0]);
                             }}

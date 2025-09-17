@@ -14,7 +14,7 @@ const ProgressBar = ({ value,progress }) => {
                     backgroundColor: 'transparent',
                 }}
             />
-            <style jsx>{`
+            <style>{`
                 progress {
                     appearance:none;
                 }

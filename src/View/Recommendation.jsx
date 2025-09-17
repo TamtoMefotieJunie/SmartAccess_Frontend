@@ -19,9 +19,7 @@ function Recommendation() {
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        const response = await fetch('/api/recommendations');
-        const data = await response.json();
-        setRecommendations(data);
+       console.log("hi")
       } catch (error) {
         console.error('Error fetching recommendations:', error);
         const mockData = [

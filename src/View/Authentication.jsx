@@ -17,7 +17,7 @@ function Authentication({ onToggle }) {
   const navigate = useNavigate();
   const handleLogin = () => {
     Swal.fire({
-      position: "top-center",
+      position: "center",
       icon:"success",
       title: "Login successful!!!",
       showConfirmButton: false,
@@ -26,7 +26,7 @@ function Authentication({ onToggle }) {
   }
   const handleFailure = () => {
     Swal.fire({
-      position: "top-center",
+      position: "center",
       icon:"error",
       title: "Login Failed!!!",
       showConfirmButton: false,
@@ -146,8 +146,8 @@ function Authentication({ onToggle }) {
               </a>
             </p>
           </div>
-          <div className="w-[50%] rounded-lg h-full bg-red-100 flex justify-center items-center">
-            <img src={adminImg} className="w-full h-full rounded-lg" alt="login image" />
+          <div className="w-[50%] rounded-lg h-full bg-red-100 flex justify-center items-center" >
+            <img src={adminImg} className="w-full h-full rounded-lg" alt="login image"  />
           </div>
         </div>
       </div>
